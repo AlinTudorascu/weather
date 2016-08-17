@@ -1,0 +1,149 @@
+<html>
+<head>
+
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<style>
+
+div {
+  color:white;
+}
+
+.title {
+  text-align:center;
+}
+
+.city {
+  text-align:center;
+  margin-top:70px;
+}
+
+.center {
+  text-align:center;
+}
+
+.thunder {
+  background-image:url("http://img.mota.ru/upload/wallpapers/source/2012/07/25/11/02/31766/mota_ru_2072502.jpg");
+  background-size:cover;
+}
+
+.drizzle {
+  background-image:url("http://hdwallpaperia.com/wp-content/uploads/2014/01/Rain-In-Paris-Eiffel-Tower-Wallpaper.jpg");
+  background-size:cover;
+}
+
+.rain {
+  background-image:url("http://67.media.tumblr.com/b18f65d1e77d978d882d40d3192a5e9c/tumblr_mprcarPcXB1ssh79no1_1280.jpg");
+  background-size:cover;
+}
+
+.snow {
+  background-image:url("https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQHWeJD4E0aujFl6g1nRmda1Exbes8rrMRWKsddyDqujB-hJihF");
+  background-size:cover;
+}
+
+.clear {
+  background-image:url("http://photoshdwallpapers.com/wp-content/uploads/2016/01/Sunny-Day-HD-Wallpapers.jpg");
+  background-size:cover;
+}
+
+.clouds {
+  background-image:url("http://www.oneroofenergy.com/wp-content/uploads/2015/03/shutterstock_141670552.jpg");
+  background-size:cover;
+}
+
+.default {
+  background-image:url("https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT4laowRHdZFZU874279OgpVZg-yGphLgXFcGKIrDr12_L6tNwf");
+  background-size:cover;
+}
+
+</style>
+
+</head>
+
+<body>
+  <div class=container>
+    <h1 class="title">Weather App</h1>
+    
+    <div>
+      <p class="lead city" id=city></p>
+      <p class="lead center"><span id="temp"></span> <span id="description"></span> <span id="wind"></span> knots</p>
+    </div>
+    
+  </div>
+
+  <script>$(document).ready(function(){
+  var lat;
+  var lon;
+  var C; var F;
+  var schimbare=1;
+  
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      
+      lat=position.coords.latitude;
+      lon=position.coords.longitude;
+  
+      var api="http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid=6664188ae88e761fcf732f30eca478e0";
+      
+      $.getJSON(api,function(data){
+        $("#data").html("latitude: " + lat + "<br>longitude: " + lon);
+        var kelvin=data.main.temp; //temperatura kelvin
+        var description=data.weather[0].description; //Descriere vreme
+        var windSpeed=data.wind.speed; //Viteza vant
+        var city=data.name; //Oras
+        C=Math.round(kelvin-273.15); //temperatura C
+        F=Math.round(kelvin*9/5-459.67); //temperatura F
+        
+        
+   console.log(F);     console.log(city,kelvin,windSpeed,C,F,description);
+        
+        $("#city").html(city);
+        $("#description").html(description);
+        $("#wind").html(windSpeed);
+        $("#temp").html(C+"°C");
+        $("#temp").click(function(){
+          if(schimbare===1){
+            $("#temp").html(F+"°F");
+            schimbare=0;
+          } else {
+            $("#temp").html(C+"°C");
+            schimbare=1;
+          }
+        });
+        
+        var cod=data.weather[0].id;
+        
+        if (200<cod<300) {
+           $("body").addClass("thunder");;
+        }
+        if (300<cod<400) {
+            $("body").addClass("drizzle");
+        }
+        if (500<cod<600) {
+           $("body").addClass("rain");
+        }
+        if (600<cod<700) {
+           $("body").addClass("snow");
+        }
+        if (800<cod<900) {
+           $("body").addClass("clouds");
+        }
+        if (cod===800) {
+           $("body").addClass("clear");
+        };
+        
+      });
+      
+    });
+    
+  }
+});
+
+</script>
+  
+</body>
+
+</html>
